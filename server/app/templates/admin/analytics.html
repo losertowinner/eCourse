@@ -1,120 +1,95 @@
 {% extends 'admin/master.html' %} {% block body %}
-<h2 class="my-4 text-center">Analytics & Statistics</h2>
+<h2 class="my-4 text-center">Analytics & Statistics 📉</h2>
 
-<form
-	id="filterForm"
-	class="d-flex justify-content-center">
-	<div class="form-group mx-2">
-		<input
-			type="date"
-			class="form-control"
-			id="from_date"
-			name="from_date" />
+<div class="row align-items-center mb-3">
+	<div class="col-3">
+		<h5>Statistics</h5>
+
+		<ul class="list-group">
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Posts:
+				<span class="badge bg-primary rounded-pill"> {{total.posts}} </span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Users:
+				<span class="badge bg-primary rounded-pill"> {{total.users}} </span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Comments:
+				<span class="badge bg-primary rounded-pill">
+					{{total.comments}}
+				</span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Likes:
+				<span class="badge bg-primary rounded-pill"> {{total.likes}} </span>
+			</li>
+		</ul>
 	</div>
-	<div class="form-group mx-2">
-		<input
-			type="date"
-			class="form-control"
-			id="to_date"
-			name="to_date" />
+	<div class="col-9">
+		<form class="row g-3 needs-validation">
+			<div class="col-md-6 mb-3">
+				<input
+					type="date"
+					class="form-control"
+					id="from_date"
+					name="from_date" />
+			</div>
+			<div class="col-md-6">
+				<input
+					type="date"
+					class="form-control"
+					id="to_date"
+					name="to_date" />
+			</div>
+			<div class="col-md-6">
+				<input
+					type="text"
+					class="form-control"
+					id="search"
+					name="keyword"
+					placeholder="Enter keyword..." />
+			</div>
+			<div class="col-md-6 mb-3">
+				<select
+					class="custom-select"
+					id="chartType">
+					<option value="bar">Bar Chart</option>
+					<option value="line">Line Chart</option>
+					<option value="bubble">Bubble Chart</option>
+					<option value="doughnut">Doughnut Chart</option>
+					<option value="pie">Pie Chart</option>
+					<option value="polarArea">Polar Area Chart</option>
+					<option value="radar">Radar Chart</option>
+					<option value="scatter">Scatter Chart</option>
+				</select>
+			</div>
+			<div class="col-12">
+				<button
+					type="submit"
+					class="btn btn-primary">
+					Filter
+				</button>
+			</div>
+		</form>
 	</div>
-	<div class="form-group mx-2">
-		<input
-			type="text"
-			class="form-control"
-			id="search"
-			name="keyword"
-			placeholder="Enter keyword..." />
-	</div>
-	<div class="form-group mx-2">
-		<button
-			type="submit"
-			class="btn btn-primary">
-			Filter
-		</button>
-	</div>
-</form>
+</div>
 
 <div class="row">
 	<div class="col-6">
-		<canvas id="categoryChart"></canvas>
+		<canvas id="postsChart"></canvas>
 	</div>
 	<div class="col-6">
-		<select
-			class="custom-select w-50 mb-2"
-			id="typeChoices"></select>
-		<table class="table table-hover table-bordered">
-			<caption>
-				Statistical of the number of courses by category
-			</caption>
-			<thead class="bg-primary">
-				<tr>
-					<th scope="col">ID</th>
-					<th scope="col">Name</th>
-					<th scope="col">Amount</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for c in categories %}
-				<tr class="table-light">
-					<td>{{c[0] }}</td>
-					<td>{{c[1] }}</td>
-					<td>{{c[2] }}</td>
-				</tr>
-				{% endfor%}
-				<tr class="table-light">
-					<th colspan="2">Total</th>
-					<td>{{total_courses}}</td>
-				</tr>
-			</tbody>
-		</table>
+		<canvas id="rankChart"></canvas>
 	</div>
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script src="{{ url_for('static', filename='js/app.js') }}"></script>
-<script>
-	const labels = [], data = [], backgroundColor = [], borderColor = [];
-	const chartTypes = [
-	    { value: 'bar', text: 'Bar Chart' },
-	    { value: 'line', text: 'Line Chart' },
-	    { value: 'bubble', text: 'Bubble Chart' },
-	    { value: 'doughnut', text: 'Doughnut Chart' },
-		{ value: 'pie', text: 'Pie Chart' },
-		{ value: 'polarArea', text: 'Polar Area Chart' },
-		{ value: 'radar', text: 'Radar Chart' },
-		{ value: 'scatter', text: 'Scatter Chart' }
-	];
-
-	{% for c in categories %}
-	    labels.push('{{ c[1] }}');
-	    data.push({{ c[2] }});
-	{% endfor %}
-
-	window.onload = () => {
-		const typeChoices = document.getElementById('typeChoices');
-	    chartTypes.forEach(type => {
-	        const option = document.createElement('option');
-	        option.value = type.value;
-	        option.textContent = type.text;
-	        typeChoices.appendChild(option);
-	    });
-
-		typeChoices.value = 'bar';
-
-	    for (let i = 0; i < labels.length; i++) {
-	        backgroundColor.push(generateRandomColor());
-	        borderColor.push(generateRandomColor(0.5));
-	    }
-
-	    const newCtx = document.getElementById('categoryChart').getContext('2d');
-	    let chartType = typeChoices.value;
-	    loadChart(newCtx, chartType, labels, "Statistical of the number of courses by category", "Amount", data, backgroundColor, borderColor);
-
-	    typeChoices.addEventListener('change', (event) => {
-	        chartType = event.target.value;
-	        loadChart(newCtx, chartType, labels, "Statistical of the number of courses by category", "Amount", data, backgroundColor, borderColor);
-	    });
-	}
-</script>
+<script
+	type="module"
+	src="{{ url_for('static', filename='js/statistics.js') }}"></script>
 {% endblock %}

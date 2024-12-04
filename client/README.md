@@ -14,7 +14,7 @@ These instructions will get you a copy of the project up and running on your loc
 Install the dependencies
 
 ```bash
-yarn
+npm i
 ```
 
 ### Installing
@@ -22,9 +22,9 @@ yarn
 Run server
 
 ```bash
-yarn dev
+npm dev
 ```
 
 ## Author
 
-Copyright &copy; 2024 by [ZIN](http://www.github.com/zinitdev)
+Copyright &copy; 2024 by [ZIN](http://www.github.com/losertowinner)

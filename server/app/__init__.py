@@ -1,40 +1,44 @@
 from flask import Flask
-from flask_migrate import Migrate
-from flask_login import LoginManager
-from flask_cors import CORS
-from flask_debugtoolbar import DebugToolbarExtension
-from flask_jwt_extended import JWTManager
-from .config import DevelopmentConfig
-from .models import db
-from .apis import api
+
+from .config import Config
+from .extensions import db, api, cors, login_manager, bcrypt, jwt
+from .resources import category_ns, course_ns, user_ns, token_ns, lesson_ns
 from .admin import admin_manager, babel
-from .services.caching import cache
+from .dao import load_users
 
-jwt = JWTManager()
-login_manager = LoginManager()
 
-def create_app(config_class=DevelopmentConfig):
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config_class)
-    db.init_app(app=app)
-    cache.init_app(app=app)
-    babel.init_app(app=app)
-    
-    Migrate(app=app, db=db, render_as_batch=False)
-    CORS(app=app, resources={r"/*": {"origins": "*"}})
-    
-    jwt.init_app(app=app)
-    login_manager.init_app(app=app)
-    api.init_app(app=app)
-    admin_manager.init_app(app=app)
-    
-    DebugToolbarExtension(app=app)
-    
-    from .models import (
-        Category, Course, Lesson, Tag, 
-        lesson_tag, course_tag, User, Order,
-        Order, OrderDetail, Like, Comment, 
-        Resource, Rating
-    )
-    
+
+    app.config.from_object(Config)
+
+    cors.init_app(app)
+    db.init_app(app)
+    login_manager.init_app(app)
+    bcrypt.init_app(app)
+    jwt.init_app(app)
+
+    api.init_app(app)
+    api.add_namespace(category_ns)
+    api.add_namespace(course_ns)
+    api.add_namespace(user_ns)
+    api.add_namespace(token_ns)
+    api.add_namespace(lesson_ns)
+
+    admin_manager.init_app(app)
+    babel.init_app(app)
+
+    @jwt.user_identity_loader
+    def user_identity_lookup(user):
+        return user.id
+
+    @jwt.user_lookup_loader
+    def user_lookup_callback(_jwt_header, jwt_data):
+        identity = jwt_data["sub"]
+        return load_users(id=identity)
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return load_users(id=user_id)
+
     return app
