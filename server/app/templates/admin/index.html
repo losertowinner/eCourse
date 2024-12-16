@@ -1,0 +1,68 @@
+{% extends 'admin/master.html' %}
+<div class="mt-4">
+	{% block body %}
+	<div class="jumbotron">
+		<h1 class="display-5">Welcome to eBlog Administrator Dashboard</h1>
+		<p class="lead">Manage your courses, users, tags, and more from here.</p>
+		<hr class="my-4" />
+		<p>Use the navigation bar to access different sections.</p>
+	</div>
+
+	<div class="row">
+		<div class="col-6">
+			<table class="table table-hover table-bordered">
+				<caption>
+					Statistics on the number of courses in each category
+				</caption>
+				<thead class="bg-primary">
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">Title</th>
+						<th scope="col">Amount</th>
+					</tr>
+				</thead>
+				<!-- <tbody>
+					{% for c in categories %}
+					<tr class="table-light">
+						<td>{{c[0] }}</td>
+						<td>{{c[1] }}</td>
+						<td>{{c[2] }}</td>
+					</tr>
+					{% endfor%}
+					<tr class="table-light">
+						<th colspan="2">Total</th>
+						<td>{{total_courses}}</td>
+					</tr>
+				</tbody> -->
+			</table>
+		</div>
+		<div class="col-6">
+			<table class="table table-hover table-bordered">
+				<caption>
+					Statistics on the number of courses in each category
+				</caption>
+				<thead class="bg-primary">
+					<tr>
+						<th scope="col">ID</th>
+						<th scope="col">Name</th>
+						<th scope="col">Amount</th>
+					</tr>
+				</thead>
+				<tbody>
+					<!-- {% for c in categories %}
+					<tr class="table-light">
+						<td>{{c[0] }}</td>
+						<td>{{c[1] }}</td>
+						<td>{{c[2] }}</td>
+					</tr>
+					{% endfor%}
+					<tr class="table-light">
+						<th colspan="2">Total</th>
+						<td>{{total_courses}}</td>
+					</tr> -->
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

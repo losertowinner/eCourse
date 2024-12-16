@@ -1,0 +1,95 @@
+{% extends 'admin/master.html' %} {% block body %}
+<h2 class="my-4 text-center">Analytics & Statistics 📉</h2>
+
+<div class="row align-items-center mb-3">
+	<div class="col-3">
+		<h5>Statistics</h5>
+
+		<ul class="list-group">
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Posts:
+				<span class="badge bg-primary rounded-pill"> {{total.posts}} </span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Users:
+				<span class="badge bg-primary rounded-pill"> {{total.users}} </span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Comments:
+				<span class="badge bg-primary rounded-pill">
+					{{total.comments}}
+				</span>
+			</li>
+			<li
+				class="list-group-item d-flex justify-content-between align-items-center">
+				Total Likes:
+				<span class="badge bg-primary rounded-pill"> {{total.likes}} </span>
+			</li>
+		</ul>
+	</div>
+	<div class="col-9">
+		<form class="row g-3 needs-validation">
+			<div class="col-md-6 mb-3">
+				<input
+					type="date"
+					class="form-control"
+					id="from_date"
+					name="from_date" />
+			</div>
+			<div class="col-md-6">
+				<input
+					type="date"
+					class="form-control"
+					id="to_date"
+					name="to_date" />
+			</div>
+			<div class="col-md-6">
+				<input
+					type="text"
+					class="form-control"
+					id="search"
+					name="keyword"
+					placeholder="Enter keyword..." />
+			</div>
+			<div class="col-md-6 mb-3">
+				<select
+					class="custom-select"
+					id="chartType">
+					<option value="bar">Bar Chart</option>
+					<option value="line">Line Chart</option>
+					<option value="bubble">Bubble Chart</option>
+					<option value="doughnut">Doughnut Chart</option>
+					<option value="pie">Pie Chart</option>
+					<option value="polarArea">Polar Area Chart</option>
+					<option value="radar">Radar Chart</option>
+					<option value="scatter">Scatter Chart</option>
+				</select>
+			</div>
+			<div class="col-12">
+				<button
+					type="submit"
+					class="btn btn-primary">
+					Filter
+				</button>
+			</div>
+		</form>
+	</div>
+</div>
+
+<div class="row">
+	<div class="col-6">
+		<canvas id="postsChart"></canvas>
+	</div>
+	<div class="col-6">
+		<canvas id="rankChart"></canvas>
+	</div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script
+	type="module"
+	src="{{ url_for('static', filename='js/statistics.js') }}"></script>
+{% endblock %}
